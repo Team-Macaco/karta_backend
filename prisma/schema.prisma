@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// explorer | owner | admin
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  fullName     String   @map("full_name") @db.VarChar(100)
+  email        String   @unique @db.VarChar(150)
+  passwordHash String   @map("password_hash")
+  role         String   @default("explorer") @db.VarChar(20)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  restaurants     Restaurant[]
+  favoritePlaces  UserFavoritePlace[]
+  favoriteDishes  UserFavoriteDish[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@map("users")
+}
+
+/// draft | pending_review | active | suspended
+model Restaurant {
+  id          String   @id @default(uuid()) @db.Uuid
+  ownerId     String?  @map("owner_id") @db.Uuid
+  name        String   @db.VarChar(150)
+  description String?
+  phone       String?  @db.VarChar(20)
+  email       String?  @db.VarChar(150)
+  rating      Decimal  @default(0.0) @db.Decimal(2, 1)
+  reviewCount Int      @default(0) @map("review_count")
+  status      String   @default("draft") @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  owner           User?                @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  location        Location?
+  businessHours   BusinessHour[]
+  menuCategories  MenuCategory[]
+  cuisines        RestaurantCuisine[]
+  favoritePlaces  UserFavoritePlace[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@map("restaurants")
+}
+
+model Location {
+  id           Int      @id @default(autoincrement())
+  restaurantId String   @unique @map("restaurant_id") @db.Uuid
+  addressLine  String   @map("address_line")
+  neighborhood String?  @db.VarChar(100)
+  zipCode      String?  @map("zip_code") @db.VarChar(10)
+  city         String?  @db.VarChar(100)
+  state        String?  @db.VarChar(100)
+  latitude     Decimal  @db.Decimal(10, 8)
+  longitude    Decimal  @db.Decimal(11, 8)
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@map("locations")
+}
+
+model BusinessHour {
+  id           Int      @id @default(autoincrement())
+  restaurantId String   @map("restaurant_id") @db.Uuid
+  /// 0 = domingo ... 6 = sábado
+  dayOfWeek    Int      @map("day_of_week")
+  openTime     DateTime @map("open_time") @db.Time(6)
+  closeTime    DateTime @map("close_time") @db.Time(6)
+  isClosed     Boolean  @default(false) @map("is_closed")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([restaurantId, dayOfWeek])
+  @@map("business_hours")
+}
+
+model MenuCategory {
+  id           Int    @id @default(autoincrement())
+  restaurantId String @map("restaurant_id") @db.Uuid
+  name         String @db.VarChar(100)
+  displayOrder Int    @default(0) @map("display_order")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  dishes     Dish[]
+
+  @@map("menu_categories")
+}
+
+model Dish {
+  id          String   @id @default(uuid()) @db.Uuid
+  categoryId  Int      @map("category_id")
+  name        String   @db.VarChar(150)
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("MXN") @db.VarChar(5)
+  imageUrl    String?  @map("image_url")
+  isAvailable Boolean  @default(true) @map("is_available")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  category       MenuCategory      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  dietaryTags    DishDietaryTag[]
+  favoriteDishes UserFavoriteDish[]
+
+  @@map("dishes")
+}
+
+model Cuisine {
+  id      Int     @id @default(autoincrement())
+  name    String  @unique @db.VarChar(50)
+  iconUrl String? @map("icon_url")
+
+  restaurants RestaurantCuisine[]
+
+  @@map("cuisines")
+}
+
+model DietaryTag {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(50)
+
+  dishes DishDietaryTag[]
+
+  @@map("dietary_tags")
+}
+
+model RestaurantCuisine {
+  restaurantId String @map("restaurant_id") @db.Uuid
+  cuisineId    Int    @map("cuisine_id")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  cuisine    Cuisine    @relation(fields: [cuisineId], references: [id], onDelete: Cascade)
+
+  @@id([restaurantId, cuisineId])
+  @@map("restaurant_cuisines")
+}
+
+model DishDietaryTag {
+  dishId String @map("dish_id") @db.Uuid
+  tagId  Int    @map("tag_id")
+
+  dish Dish       @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  tag  DietaryTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([dishId, tagId])
+  @@map("dish_dietary_tags")
+}
+
+model UserFavoritePlace {
+  userId       String   @map("user_id") @db.Uuid
+  restaurantId String   @map("restaurant_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@id([userId, restaurantId])
+  @@map("user_favorites_places")
+}
+
+model UserFavoriteDish {
+  userId    String   @map("user_id") @db.Uuid
+  dishId    String   @map("dish_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dish Dish @relation(fields: [dishId], references: [id], onDelete: Cascade)
+
+  @@id([userId, dishId])
+  @@map("user_favorites_dishes")
+}
+
+model AnalyticsEvent {
+  id           BigInt   @id @default(autoincrement())
+  restaurantId String   @map("restaurant_id") @db.Uuid
+  userId       String?  @map("user_id") @db.Uuid
+  eventType    String   @map("event_type") @db.VarChar(50)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  user       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("analytics_events")
+}

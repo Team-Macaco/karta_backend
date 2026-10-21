@@ -1,0 +1,28 @@
+meta {
+  name: Login (Explorer)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "ava@karta.app",
+    "password": "karta1234"
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.accessToken) {
+    bru.setEnvVar("token", res.body.accessToken);
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete Dish
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/dishes/{{dishId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

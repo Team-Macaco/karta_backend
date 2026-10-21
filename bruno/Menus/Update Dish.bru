@@ -1,0 +1,30 @@
+meta {
+  name: Update Dish
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/dishes/{{dishId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Agua de Horchata Grande 1L",
+    "description": "Elaborada con arroz, canela y toque de vainilla",
+    "price": 55,
+    "currency": "MXN",
+    "isAvailable": true,
+    "dietaryTagIds": [1]
+  }
+}

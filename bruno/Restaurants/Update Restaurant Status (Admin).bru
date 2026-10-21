@@ -1,0 +1,25 @@
+meta {
+  name: Update Restaurant Status (Admin)
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "status": "active"
+  }
+}

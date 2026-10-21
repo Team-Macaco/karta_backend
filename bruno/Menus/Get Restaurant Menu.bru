@@ -1,0 +1,11 @@
+meta {
+  name: Get Restaurant Menu
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}/menu
+  body: none
+  auth: none
+}

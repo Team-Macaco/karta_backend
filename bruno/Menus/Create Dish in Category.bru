@@ -1,0 +1,37 @@
+meta {
+  name: Create Dish in Category
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/menu-categories/{{categoryId}}/dishes
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Agua de Horchata Artesanal",
+    "description": "Elaborada con arroz, canela y leche de almendra",
+    "price": 40,
+    "currency": "MXN",
+    "imageUrl": "https://imgs.search.brave.com/2prM2HpamcmInSA4gcrhA_UB6d0B8ncQZvqFFzEgq0s/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9ncmVl/bmhlYWx0aHljb29r/aW5nLmNvbS93cC1j/b250ZW50L3VwbG9h/ZHMvMjAxOS8wNS9B/Z3VhLWRlLUhvcmNo/YXRhLUNsb3NldXAu/anBn",
+    "isAvailable": true,
+    "dietaryTagIds": [1]
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.id) {
+    bru.setEnvVar("dishId", res.body.id);
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Remove Favorite Dish
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/me/favorites/dishes/{{dishId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

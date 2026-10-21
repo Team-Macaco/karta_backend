@@ -1,0 +1,15 @@
+meta {
+  name: Delete Menu Category
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/menu-categories/{{categoryId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

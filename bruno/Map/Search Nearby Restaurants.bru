@@ -1,0 +1,25 @@
+meta {
+  name: Search Nearby Restaurants
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/map/nearby?lat=19.4194&lng=-99.1624&radius=1000
+  body: none
+  auth: none
+}
+
+params:query {
+  lat: 19.4194
+  lng: -99.1624
+  radius: 1000
+  ~q: tacos
+  ~cuisineIds: 1,5
+  ~dietaryTagIds: 1
+  ~maxPrice: 150
+  ~dayOfWeek: 1
+  ~time: 13:00
+  ~openNow: true
+  ~limit: 50
+}

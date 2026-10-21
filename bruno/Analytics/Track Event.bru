@@ -1,0 +1,22 @@
+meta {
+  name: Track Analytics Event
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/analytics/events
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "restaurantId": "{{restaurantId}}",
+    "eventType": "view_menu"
+  }
+}

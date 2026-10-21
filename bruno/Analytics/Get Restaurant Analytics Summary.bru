@@ -1,0 +1,15 @@
+meta {
+  name: Get Restaurant Analytics Summary
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}/analytics
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

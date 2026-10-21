@@ -1,0 +1,29 @@
+meta {
+  name: Update Restaurant
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Taquería Los Parados - Roma",
+    "description": "Los mejores tacos al carbón de la CDMX",
+    "phone": "5552645511",
+    "email": "roma@losparados.mx",
+    "cuisineIds": [1, 5]
+  }
+}

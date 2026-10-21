@@ -1,0 +1,30 @@
+meta {
+  name: Register User
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "fullName": "Carlos Mendez",
+    "email": "nuevo_usuario@karta.app",
+    "password": "secreto1234",
+    "role": "explorer"
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.accessToken) {
+    bru.setEnvVar("token", res.body.accessToken);
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: List Favorite Places
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/me/favorites/places
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

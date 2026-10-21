@@ -1,0 +1,15 @@
+meta {
+  name: Save Favorite Place
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/me/favorites/places/{{restaurantId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

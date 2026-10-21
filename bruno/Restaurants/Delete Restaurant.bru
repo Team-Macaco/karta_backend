@@ -1,0 +1,15 @@
+meta {
+  name: Delete Restaurant
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

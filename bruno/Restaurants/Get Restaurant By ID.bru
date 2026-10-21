@@ -1,0 +1,16 @@
+meta {
+  name: Get Restaurant By ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  ~dayOfWeek: 1
+  ~time: 14:00
+}

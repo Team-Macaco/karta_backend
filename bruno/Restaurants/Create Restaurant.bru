@@ -1,0 +1,35 @@
+meta {
+  name: Create Restaurant
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/restaurants
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Taquería Los Parados",
+    "description": "Tacos al carbón, bistec y chuleta en la Roma",
+    "phone": "5552645510",
+    "email": "contacto@losparados.mx",
+    "cuisineIds": [1, 5]
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.id) {
+    bru.setEnvVar("restaurantId", res.body.id);
+  }
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Upsert Restaurant Location
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/restaurants/{{restaurantId}}/location
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "addressLine": "Av. Monterrey 333",
+    "neighborhood": "Roma Sur",
+    "zipCode": "06760",
+    "city": "Ciudad de México",
+    "state": "CDMX",
+    "latitude": 19.4065,
+    "longitude": -99.1637
+  }
+}
